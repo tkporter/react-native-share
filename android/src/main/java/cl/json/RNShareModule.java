@@ -32,9 +32,9 @@ public class RNShareModule extends ReactContextBaseJavaModule {
     Intent intentChooser = createIntentChooser(options, shareIntent);
       this.callback = callback;
     try {
-      this.reactContext.startActivity(intentChooser);
+      this.reactContext.startActivityForResult(intentChooser);
 
-      this.callback.invoke("OK");
+      //this.callback.invoke("OK");
     } catch (ActivityNotFoundException ex) {
       this.callback.invoke("not_available");
     }
