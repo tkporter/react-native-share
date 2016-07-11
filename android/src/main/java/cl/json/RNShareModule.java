@@ -12,6 +12,8 @@ import com.facebook.react.bridge.Callback;
 
 public class RNShareModule extends ReactContextBaseJavaModule {
 
+    private Callback callback;
+
   private final ReactApplicationContext reactContext;
 
   public RNShareModule(ReactApplicationContext reactContext) {
@@ -28,12 +30,13 @@ public class RNShareModule extends ReactContextBaseJavaModule {
   public void open(ReadableMap options, Callback callback) {
     Intent shareIntent = createShareIntent(options);
     Intent intentChooser = createIntentChooser(options, shareIntent);
-
+      this.callback = callback;
     try {
-      this.reactContext.startActivity(intentChooser);
-      callback.invoke("OK");
+      this.reactContext.startActivityForResult(intentChooser);
+
+      //this.callback.invoke("OK");
     } catch (ActivityNotFoundException ex) {
-      callback.invoke("not_available");
+      this.callback.invoke("not_available");
     }
   }
 
@@ -74,6 +77,11 @@ public class RNShareModule extends ReactContextBaseJavaModule {
 
     return chooser;
   }
+
+    @Override
+    protected void onActivityResult(int requestCode, int result, Intent data) {
+        this.callback.invoke("RequestCode: " + requestCode + "\nResult: " + result + "\nIntentData: " + data.toString());
+    }
 
   /**
    * Checks if a given key is valid
